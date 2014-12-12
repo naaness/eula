@@ -1,0 +1,118 @@
+*{
+  padding: 0px;
+  margin: 0px;
+  box-sizing: border-box;
+  -moz-box-sizing: border-box;
+}
+
+html,body{
+  width: 100%;
+  height: 100%;
+}
+
+body{
+  //background: #e7eff7;
+  background: #f2f2f2;
+}
+
+#barrita{
+  width: 1%;
+  height: 4px;
+  position: absolute;
+  background: #9A48EC;
+  z-index: 1111;
+}
+
+#wrap-total{
+  width: 1200px;
+  height: 100%;
+  margin: auto;
+  //background: #dedede;
+}
+
+  #wrapper{
+    width: 100%;
+    min-height: 100%;
+    float: left;
+    position: relative;
+    //background:#aaa;
+  }
+
+  #side-bar{
+    width: 22%;
+    height: 100%;
+    float: left;
+    position: relative;
+    margin-top: 70px;
+  }
+
+  #wrap-contenido{
+    width: 78%;
+    float: left;
+    position: relative;
+    padding: 0px 10px;
+    margin-top: 70px;
+  }
+
+    #contenido, footer{
+      width: 100%;
+      float: left;
+      position: relative;
+      background:white;
+      padding: 10px;
+      border: 1px solid #dedede;
+      border-radius: 3px;
+    }
+
+    footer{
+      text-align: center;
+      margin-top: 20px;
+    }
+
+  .contenedor-cajas{
+    width: 50%;
+    float: left;
+    position: relative;
+  }
+    .cajas{
+      width: 100%;
+      position: relative;
+      padding: 5px;
+    }
+
+    .nav-pills li a{
+      color: #505050;
+      font-weight: bold;
+      background: #eee;
+    }
+    .active-nav a{
+      background: #3F50B4!important;
+      font-weight: normal!important;
+      padding-left: 25px!important;
+    }
+
+    #btn_cerrar{
+      background :#505050;
+      padding: 12px;
+      color: #aaa;
+      font-weight: bold;
+    }
+
+      #btn_cerrar:hover{
+        background: #606060;
+      }
+
+  .cover-relative{
+    position: relative;
+    padding: 5px;
+  }
+
+    .cover-relative-content{
+      border: 1px solid #dedede;
+      padding: 15px;
+      border-radius: 5px;
+    }
+
+  .alert ul li{
+    list-style: none;
+  }

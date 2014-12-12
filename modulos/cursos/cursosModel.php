@@ -344,4 +344,39 @@
         public function insertarFORO($datos){
             $this->insertarSQL($datos,"class_foro");
         }
+
+        public function getQuizes($id_class){
+            $data = $this->_db->query(
+                "SELECT * FROM class_exam " .
+                "WHERE id_class = '$id_class'"
+            );
+            return $data->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        public function insertarEXAMEN($datos){
+            $this->insertarSQL($datos,"class_exam");
+        }
+
+        public function actualizarEXAMEN ($datos){
+            $this->actualizarSQL($datos,"class_exam");
+        }
+
+        public function getPreguntaExamen ($id){
+            $data = $this->_db->query(
+                "SELECT * FROM class_exam " .
+                "WHERE id = '$id'"
+            );
+            return $data->fetch();
+        }
+        public function getRespuestasExamen($id){
+            $data = $this->_db->query(
+                "SELECT * FROM class_exam_answer " .
+                "WHERE id_question = '$id'"
+            );
+            return $data->fetchAll(PDO::FETCH_ASSOC);
+        }
+
+        public function insertarRespuestaEXAMEN ($datos){
+            $this->insertarSQL($datos,"class_exam_answer");
+        }
 	}

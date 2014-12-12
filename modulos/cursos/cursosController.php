@@ -1168,4 +1168,127 @@
 			$this->_view->renderizar('ver_foro');
 		}
 
+		public function editar_examen ($id_course=0,$id_module=0,$id_class=0){
+			$this->_acl->acceso('curse_editar_examen');
+			if ($id_module==0 || $id_course==0 || $id_class == 0) {
+				$this->redireccionar('cursos');
+			}
+			$this->getLibrary("validFluent");
+			$validador = new ValidFluent(array("id"=>$id_module,"id2"=>$id_course,"id3"=>$id_class));
+			$validador->name("id")->required("Id invalido")->numberInteger();
+			$validador->name("id2")->required("Id invalido")->numberInteger();
+			$validador->name("id3")->required("Id invalido")->numberInteger();
+			if(!$validador->isGroupValid()){
+				$this->redireccionar('cursos');
+			}
+			$this->_view->setRutaSuave("Cursos","fa-pencil-square","cursos");
+			$this->_view->setRutaSuave("Modulos","fa fa-th","cursos/modulos/".$id_course);
+			$this->_view->setRutaSuave("Clases","fa fa-puzzle-piece","cursos/clases/".$id_course."/".$id_module);
+			$this->_view->setRutaSuave("Editar Examen");
+
+			if ($this->getInt('guardar')=="1") //Sbe si el es el formulario en cuestion fue activado**
+			{
+				$validador = new ValidFluent($_POST);
+				$validador->name("pregunta")->required("Pregunta invalida")->alfa()->minSize(3);
+				if(!$validador->isGroupValid()){
+					$this->_view->setAlertSis($validador->getError('pregunta'));
+				}else{
+					$datos=array(
+			        	"id_course"=>$id_course,
+						"id_module"=>$id_module,
+						"id_class"=>$id_class,
+			        	"question"=>$_POST["pregunta"],
+			        	"answer_correct"=>0
+			        );
+			        $this->_model->insertarEXAMEN($datos);
+				}
+			}
+
+			$this->_view->assign('datos',$this->_model->getClase($id_class));
+			$this->_view->assign('icono_tipo',$this->iconos_clases());
+			$this->_view->assign('examenes',$this->_model->getQuizes($id_class));
+			$this->_view->assign('titulo','Editar Examen');
+			$this->_view->renderizar('clase_editar_examen');
+		}
+		public function editar_pregunta ($id_course=0,$id_module=0,$id_class=0,$id_pdf=0){
+			$this->_acl->acceso('curse_ver_foro');
+			if ($id_module==0 || $id_course==0 || $id_class == 0 || $id_pdf == 0) {
+				$this->redireccionar('cursos');
+			}
+			$this->getLibrary("validFluent");
+			$validador = new ValidFluent(array("id"=>$id_module,"id2"=>$id_course,"id3"=>$id_class,"id4"=>$id_pdf));
+			$validador->name("id")->required("Id invalido")->numberInteger();
+			$validador->name("id2")->required("Id invalido")->numberInteger();
+			$validador->name("id3")->required("Id invalido")->numberInteger();
+			$validador->name("id4")->required("Id invalido")->numberInteger();
+			if(!$validador->isGroupValid()){
+				$this->redireccionar('cursos');
+			}
+			$this->_view->setRutaSuave("Cursos","fa-pencil-square","cursos");
+			$this->_view->setRutaSuave("Modulos","fa fa-th","cursos/modulos/".$id_course);
+			$this->_view->setRutaSuave("Clases","fa fa-puzzle-piece","cursos/clases/".$id_course."/".$id_module);
+			$this->_view->setRutaSuave("Editar Examen","fa fa-exclamation-circle","cursos/editar_examen/".$id_course."/".$id_module."/".$id_class);
+			$this->_view->setRutaSuave("Editar Pregunta");
+
+			if ($this->getInt('editar')=="1") //Sbe si el es el formulario en cuestion fue activado**
+			{
+				$validador = new ValidFluent($_POST);
+				$validador->name("pregunta")->required("Pregunta invalida")->alfa()->minSize(3);
+				$validador->name("respuesta")->required("Respuesta invalida")->numberInteger();
+				if(!$validador->isGroupValid()){
+					$this->_view->setAlertSis($validador->getError('pregunta'));
+					$this->_view->setAlertSis($validador->getError('respuesta'));
+				}else{
+					$datos=array(
+						"id"=>$id_pdf,
+			        	"question"=>$_POST["pregunta"],
+			        	"answer_correct"=>$_POST["respuesta"]
+			        );
+			        $this->_model->actualizarEXAMEN($datos);
+				}
+			}
+
+			$this->_view->setJs(array('editar_pregunta'));
+
+			$this->_view->assign('datos',$this->_model->getPreguntaExamen($id_pdf));
+			$icono_tipo = $this->iconos_clases();
+			$datos = $this->_model->getClase($id_class);
+			$this->_view->assign('icono_tipo',$icono_tipo[$datos["type"]]);
+			$this->_view->assign('respuestas',$this->_model->getRespuestasExamen($id_pdf));
+			$this->_view->assign('titulo','Editar Pregunta');
+			$this->_view->renderizar('editar_pregunta');
+		}
+
+		public function nueva_respuesta ($id_pregunta=0){
+			$this->_acl->acceso('curse_nueva_respuesta');
+			if ($id_pregunta==0) {
+				$this->redireccionar('cursos');
+				exit();
+			}
+			$this->getLibrary("validFluent");
+			$validador = new ValidFluent(array("id"=>$id_pregunta));
+			$validador->name("id")->required("Id invalido")->numberInteger();
+			if(!$validador->isGroupValid()){
+				$this->redireccionar('cursos');
+				exit();
+			}
+			$datos=array(
+				"id_question"=>$id_pregunta,
+	        	"answer"=>""
+	        );
+	        $this->_model->insertarRespuestaEXAMEN($datos);
+
+	        $da = $this->_model->getPreguntaExamen($id_pregunta);
+	        if ($da["answer_correct"]==0) {
+	        	$respuestas = $this->_model->getRespuestasExamen($id_pregunta);
+	        	$datos=array(
+					"id"=>$id_pregunta,
+		        	"answer_correct"=>$respuestas[0]["id"]
+		        );
+		        $this->_model->actualizarEXAMEN($datos);
+	        }
+	        $this->redireccionar('cursos/editar_pregunta/'.$da["id_course"].'/'.$da["id_module"].'/'.$da["id_class"].'/'.$da["id"]);
+			exit();
+		}
+
 	}

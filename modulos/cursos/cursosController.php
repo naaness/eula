@@ -903,17 +903,16 @@
 	        exit();
 		}
 
-		public function oir_audio ($id_course=0,$id_module=0,$id_class=0,$id_pdf=0){
+		public function oir_audio ($id_course=0,$id_module=0,$id_class=0, $id_pdf=0){
 			$this->_acl->acceso('curse_oir_audio');
-			if ($id_module==0 || $id_course==0 || $id_class == 0 || $id_pdf == 0) {
+			if ($id_module==0 || $id_course==0 || $id_class == 0 ) {
 				$this->redireccionar('cursos');
 			}
 			$this->getLibrary("validFluent");
-			$validador = new ValidFluent(array("id"=>$id_module,"id2"=>$id_course,"id3"=>$id_class,"id4"=>$id_pdf));
+			$validador = new ValidFluent(array("id"=>$id_module,"id2"=>$id_course,"id3"=>$id_class));
 			$validador->name("id")->required("Id invalido")->numberInteger();
 			$validador->name("id2")->required("Id invalido")->numberInteger();
 			$validador->name("id3")->required("Id invalido")->numberInteger();
-			$validador->name("id4")->required("Id invalido")->numberInteger();
 			if(!$validador->isGroupValid()){
 				$this->redireccionar('cursos');
 			}
@@ -925,14 +924,8 @@
 			$this->_view->setRutaSuave("Clases","fa fa-puzzle-piece","cursos/clases/".$id_course."/".$id_module);
 			$this->_view->setRutaSuave("Oir Audio");
 
-			$this->_view->assign('id1',$id_course);
-			$this->_view->assign('id2',$id_module);
-			$this->_view->assign('id3',$id_class);
-			$this->_view->assign('id4',$id_pdf);
-
-			
-
-			$this->_view->assign('purldf',$id_course.'/'.$id_module.'/'.$id_class.'/'.$id_pdf);
+			$this->_view->assign('ir_vista_curso',$id_pdf);
+			$this->_view->assign('purldf',$id_course.'/'.$id_module.'/'.$id_class);
 
 			$this->_view->assign('titulo','Oir audio');
 			$this->_view->assign('descripcion','Oir audio');
@@ -1057,35 +1050,34 @@
 
 		public function ver_video ($id_course=0,$id_module=0,$id_class=0,$id_pdf=0){
 			$this->_acl->acceso('curse_ver_video');
-			if ($id_module==0 || $id_course==0 || $id_class == 0 || $id_pdf == 0) {
+			if ($id_module==0 || $id_course==0 || $id_class == 0) {
 				$this->redireccionar('cursos');
 			}
 			$this->getLibrary("validFluent");
-			$validador = new ValidFluent(array("id"=>$id_module,"id2"=>$id_course,"id3"=>$id_class,"id4"=>$id_pdf));
+			$validador = new ValidFluent(array("id"=>$id_module,"id2"=>$id_course,"id3"=>$id_class));
 			$validador->name("id")->required("Id invalido")->numberInteger();
 			$validador->name("id2")->required("Id invalido")->numberInteger();
 			$validador->name("id3")->required("Id invalido")->numberInteger();
-			$validador->name("id4")->required("Id invalido")->numberInteger();
 			if(!$validador->isGroupValid()){
 				$this->redireccionar('cursos');
 			}
 			if(!$validador->isGroupValid()){
 				$this->redireccionar('cursos');
 			}
-			$this->_view->setRutaSuave("Cursos","fa-pencil-square","cursos");
-			$this->_view->setRutaSuave("Modulos","fa fa-th","cursos/modulos/".$id_course);
-			$this->_view->setRutaSuave("Clases","fa fa-puzzle-piece","cursos/clases/".$id_course."/".$id_module);
-			$this->_view->setRutaSuave("Editar Video","fa fa-film","cursos/editar_video/".$id_course."/".$id_module."/".$id_class);
-			$this->_view->setRutaSuave("Ver Video");
-
-			$this->_view->assign('id1',$id_course);
-			$this->_view->assign('id2',$id_module);
-			$this->_view->assign('id3',$id_class);
-			$this->_view->assign('id4',$id_pdf);
-
+			if ($id_pdf==0) {
+				$this->_view->setRutaSuave("Cursos","fa-pencil-square","cursos");
+				$this->_view->setRutaSuave("Vista del curso","fa fa-eye","cursos/vista_curso/".$id_course);
+				$this->_view->setRutaSuave("Examen");
+			}else{
+				$this->_view->setRutaSuave("Cursos","fa-pencil-square","cursos");
+				$this->_view->setRutaSuave("Modulos","fa fa-th","cursos/modulos/".$id_course);
+				$this->_view->setRutaSuave("Clases","fa fa-puzzle-piece","cursos/clases/".$id_course."/".$id_module);
+				$this->_view->setRutaSuave("Editar Video","fa fa-film","cursos/editar_video/".$id_course."/".$id_module."/".$id_class);
+				$this->_view->setRutaSuave("Ver Video");
+			}
 			
 
-			$this->_view->assign('purldf',$id_course.'/'.$id_module.'/'.$id_class.'/'.$id_pdf);
+			$this->_view->assign('purldf',$id_course.'/'.$id_module.'/'.$id_class);
 
 			$this->_view->assign('titulo','Ver video');
 			$this->_view->assign('descripcion','Ver video');
@@ -1144,7 +1136,7 @@
 
 		public function ver_foro ($id_course=0,$id_module=0,$id_class=0,$id_pdf=0){
 			$this->_acl->acceso('curse_ver_foro');
-			if ($id_module==0 || $id_course==0 || $id_class == 0 || $id_pdf == 0) {
+			if ($id_module==0 || $id_course==0 || $id_class == 0 ) {
 				$this->redireccionar('cursos');
 			}
 			$this->getLibrary("validFluent");
@@ -1159,13 +1151,22 @@
 			if(!$validador->isGroupValid()){
 				$this->redireccionar('cursos');
 			}
-			$this->_view->setRutaSuave("Cursos","fa-pencil-square","cursos");
-			$this->_view->setRutaSuave("Modulos","fa fa-th","cursos/modulos/".$id_course);
-			$this->_view->setRutaSuave("Clases","fa fa-puzzle-piece","cursos/clases/".$id_course."/".$id_module);
-			$this->_view->setRutaSuave("Editar Foro","fa fa-comments","cursos/clases/editar_foro/".$id_course."/".$id_module."/".$id_class);
-			$this->_view->setRutaSuave("Ver Foro");
 
-			$this->_view->assign('purldf',$id_course.'/'.$id_module.'/'.$id_class.'/'.$id_pdf);
+			if ($id_pdf==0) {
+				$this->_view->setRutaSuave("Cursos","fa-pencil-square","cursos");
+				$this->_view->setRutaSuave("Vista del curso","fa fa-eye","cursos/vista_curso/".$id_course);
+				$this->_view->setRutaSuave("Examen");
+			}else{
+				$this->_view->setRutaSuave("Cursos","fa-pencil-square","cursos");
+				$this->_view->setRutaSuave("Modulos","fa fa-th","cursos/modulos/".$id_course);
+				$this->_view->setRutaSuave("Clases","fa fa-puzzle-piece","cursos/clases/".$id_course."/".$id_module);
+				$this->_view->setRutaSuave("Editar Foro","fa fa-comments","cursos/clases/editar_foro/".$id_course."/".$id_module."/".$id_class);
+				$this->_view->setRutaSuave("Ver Foro");
+			}
+			
+			
+
+			$this->_view->assign('purldf',$id_course.'/'.$id_module.'/'.$id_class);
 
 			$this->_view->assign('titulo','Ver Foro');
 			$this->_view->assign('descripcion','Ver video');
@@ -1340,5 +1341,54 @@
 	    	}
 	    	$this->redireccionar('cursos/editar_pregunta/'.$da["id_course"].'/'.$da["id_module"].'/'.$da["id_class"].'/'.$da["id"]);
 			exit();
+		}
+
+		public function listar_lectura ($id_course=0,$id_module=0,$id_class=0){
+			$this->_acl->acceso('curse_listar_lectura');
+			if ($id_module==0 || $id_course==0 || $id_class == 0) {
+				$this->redireccionar('cursos');
+			}
+			$this->getLibrary("validFluent");
+			$validador = new ValidFluent(array("id"=>$id_module,"id2"=>$id_course,"id3"=>$id_class));
+			$validador->name("id")->required("Id invalido")->numberInteger();
+			$validador->name("id2")->required("Id invalido")->numberInteger();
+			$validador->name("id3")->required("Id invalido")->numberInteger();
+			if(!$validador->isGroupValid()){
+				$this->redireccionar('cursos');
+			}
+			$this->_view->setRutaSuave("Cursos","fa-pencil-square","cursos");
+			$this->_view->setRutaSuave("Vista del curso","fa  fa-eye","cursos/vista_curso/".$id_course);
+			$this->_view->setRutaSuave("Listado de lecturas");
+
+			// $this->_view->assign('TARGET_DIR_PDF',TARGET_DIR_PDF);
+			$this->_view->assign('datos',$this->_model->getClase($id_class));
+			$this->_view->assign('icono_tipo',$this->iconos_clases());
+			$this->_view->assign('pdfs',$this->_model->getPDFs($id_class));
+			$this->_view->assign('titulo','Listado de lecturas');
+			$this->_view->renderizar('listar_lectura');
+		}
+		public function ver_examen ($id_course=0,$id_module=0,$id_class=0){
+			$this->_acl->acceso('curse_ver_examen');
+			if ($id_module==0 || $id_course==0 || $id_class == 0) {
+				$this->redireccionar('cursos');
+			}
+			$this->getLibrary("validFluent");
+			$validador = new ValidFluent(array("id"=>$id_module,"id2"=>$id_course,"id3"=>$id_class));
+			$validador->name("id")->required("Id invalido")->numberInteger();
+			$validador->name("id2")->required("Id invalido")->numberInteger();
+			$validador->name("id3")->required("Id invalido")->numberInteger();
+			if(!$validador->isGroupValid()){
+				$this->redireccionar('cursos');
+			}
+			$this->_view->setRutaSuave("Cursos","fa-pencil-square","cursos");
+			$this->_view->setRutaSuave("Vista del curso","fa fa-eye","cursos/vista_curso/".$id_course);
+			$this->_view->setRutaSuave("Examen");
+
+			
+			$this->_view->assign('datos',$this->_model->getClase($id_class));
+			$this->_view->assign('icono_tipo',$this->iconos_clases());
+			$this->_view->assign('datos_clase',$this->_model->getPreguntasExamen($id_class));
+			$this->_view->assign('titulo','Examen');
+			$this->_view->renderizar('ver_examen');
 		}
 	}

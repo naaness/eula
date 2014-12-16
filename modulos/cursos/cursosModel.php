@@ -390,4 +390,11 @@
                 "WHERE id='$id' "
             );
         }
+
+        public function getPreguntasExamen($id_class){
+            $data = $this->_db->query( "SELECT r.*, w.question, w.answer_correct FROM class_exam_answer r LEFT JOIN class_exam w ON r.id_question =w.id " .
+                "WHERE w.id_class = '$id_class'"
+            );
+            return $data->fetchAll(PDO::FETCH_ASSOC);
+        }
 	}

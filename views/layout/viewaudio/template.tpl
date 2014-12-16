@@ -31,6 +31,14 @@
     </script>
 </head>
 <body>
-<a href="http://eula.com/cursos/editar_audio/{$purldf}" id="download">Regresar</a>
+{if $ir_vista_curso==0}
+    <a href="http://eula.com/cursos/vista_curso/{$purldf}">
+        <button>Regresar Vista Curso</button>
+    </a>
+{else}
+    <a href="http://eula.com/cursos/editar_audio/{$purldf}">
+        <button>Regresar</button>
+    </a>
+{/if}
 </body>
 </html>

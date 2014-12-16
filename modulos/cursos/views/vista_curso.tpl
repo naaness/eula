@@ -28,7 +28,7 @@
 			            </div>
 
 			            <div class='timeline-footer'>
-			                <a href="{$_layoutParams.root}cursos/{$tipo_clases[$dato.type]}}/{$dato.id_course}/{$dato.id_module}/{$dato.id_class}" class="btn btn-primary btn-xs">Ver</a>
+			                <a href="{$_layoutParams.root}cursos/{$tipo_clases[$dato.type]}/{$dato.id_course}/{$dato.id_module}/{$dato.id}" class="btn btn-primary btn-xs">Ver</a>
 			            </div>
 			        </div>
 			    </li>

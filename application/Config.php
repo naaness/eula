@@ -26,8 +26,11 @@
 	define('BTN_VIEW','success');
 	define('ICON_VIEW',"eye-open");
 	define('ICON_SAVED',"saved");
-	define("DATE_NOW",date("d/m/Y"));
-	define("DATE_TIME_NOW",date("Y-m-d H:i:s"));
+	
+	define("UTCGMT",-7);
+	define("LOCAL_HOUR",time() + (UTCGMT * 3600));
+	define("DATE_NOW",date("d/m/Y",LOCAL_HOUR));
+	define("DATE_TIME_NOW",date("Y-m-d H:i:s",LOCAL_HOUR));
 
 	define("TARGET_DIR_PDF",ROOT . 'public' . DS . 'filepdf' . DS );
 	define("TARGET_DIR_PDF_WEB", BASE_URL . '/public/filepdf/'  );

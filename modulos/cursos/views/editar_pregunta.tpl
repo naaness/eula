@@ -17,8 +17,11 @@
               <div class="form-group">
                 <label>Respuesta correcta</label>
                 <select class="form-control" name="respuesta">
+                  <option value="0">Seleccione una respuesta</option>
                   {foreach item=rl from=$respuestas}
-                    <option value="{$rl.id}">{$rl.answer}</option>
+                    {if trim($rl.answer)!=""}
+                      <option value="{$rl.id}" {if $datos.answer_correct==$rl.id}selected{/if}>{$rl.answer}</option>
+                    {/if}
                   {/foreach}
                 </select>
               </div>
@@ -54,13 +57,15 @@
               {foreach item=rl from=$respuestas}
                 <tr>
                   <td>
-                    <input type="text" class="form-control" name="pregunta" placeholder="Ingrese la pregunta" value="{$rl.answer}" id="txt_{$rl.id}">
+                    <input type="text" class="form-control" name="pregunta" placeholder="Ingrese la respuesta" value="{$rl.answer}" id="txt_{$rl.id}">
                   </td>
                   <td>
                     <button class="btn btn-primary btn-sm" id="edit_{$rl.id}">Modificar</button>
                   </td>
                   <td>
-                    <button class="btn btn-danger btn-sm" id="delete_{$rl.id}">Eliminar</button>
+                    <a href="{$_layoutParams.root}cursos/eliminar_respuesta/{$datos.id}/{$rl.id}">
+                      <button class="btn btn-danger btn-sm" id="delete_{$rl.id}">Eliminar</button>
+                    </a>
                   </td>
                 </tr>
               {/foreach}

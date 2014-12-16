@@ -379,4 +379,15 @@
         public function insertarRespuestaEXAMEN ($datos){
             $this->insertarSQL($datos,"class_exam_answer");
         }
+
+        public function actualizarRespuestaEXAMEN($datos){
+            $this->actualizarSQL($datos,"class_exam_answer");
+        }
+
+        public function eliminarRespuestaEXAMEN($id){
+            $this->_db->query(
+                "DELETE FROM class_exam_answer " .
+                "WHERE id='$id' "
+            );
+        }
 	}

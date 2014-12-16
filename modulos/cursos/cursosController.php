@@ -595,6 +595,15 @@
 			$icono_tipo[5]="fa fa-exclamation-circle";
 			return $icono_tipo;
 		}
+		private function tipo_clases(){
+			$icono_tipo=array();
+			$icono_tipo[1]="listar_lectura";
+			$icono_tipo[2]="oir_audio";
+			$icono_tipo[3]="ver_video";
+			$icono_tipo[4]="ver_foro";
+			$icono_tipo[5]="ver_examen";
+			return $icono_tipo;
+		}
 		private function url_clases(){
 			$icono_tipo=array();
 			$icono_tipo[1]="editar_lectura";
@@ -630,6 +639,7 @@
 			}
 
 			$this->_view->assign('icono_tipo',$this->iconos_clases());
+			$this->_view->assign('tipo_clases',$this->tipo_clases());
 			
 			$this->_view->assign('datos_curso',$this->_model->getClasesCursos($id_course));
 			$this->_view->assign('titulo','Vista curso');
@@ -1279,16 +1289,56 @@
 	        $this->_model->insertarRespuestaEXAMEN($datos);
 
 	        $da = $this->_model->getPreguntaExamen($id_pregunta);
-	        if ($da["answer_correct"]==0) {
-	        	$respuestas = $this->_model->getRespuestasExamen($id_pregunta);
-	        	$datos=array(
-					"id"=>$id_pregunta,
-		        	"answer_correct"=>$respuestas[0]["id"]
-		        );
-		        $this->_model->actualizarEXAMEN($datos);
-	        }
+	    //     if ($da["answer_correct"]==0) {
+	    //     	$respuestas = $this->_model->getRespuestasExamen($id_pregunta);
+	    //     	$datos=array(
+					// "id"=>$id_pregunta,
+		   //      	"answer_correct"=>$respuestas[0]["id"]
+		   //      );
+		   //      $this->_model->actualizarEXAMEN($datos);
+	    //     }
 	        $this->redireccionar('cursos/editar_pregunta/'.$da["id_course"].'/'.$da["id_module"].'/'.$da["id_class"].'/'.$da["id"]);
 			exit();
 		}
 
+		public function texto_respuesta(){
+			$this->_acl->acceso('curse_texto_respuesta');
+			$this->getLibrary("validFluent");
+			$validador = new ValidFluent($_POST);
+			$validador->name("id")->required("Id invalido")->numberInteger();
+			$validador->name("texto")->required("Id invalido")->alfa();
+			if($validador->isGroupValid()){
+				$datos=array(
+					"id"=>$_POST["id"],
+		        	"answer"=>$_POST["texto"]
+		        );
+			    $this->_model->actualizarRespuestaEXAMEN($datos);
+			}
+		}
+
+		public function eliminar_respuesta($id_pregunta=0,$id_respuesta=0){
+			if ($id_pregunta==0 || $id_respuesta==0) {
+				$this->redireccionar('cursos');
+				exit();
+			}
+			$this->getLibrary("validFluent");
+			$validador = new ValidFluent(array("id"=>$id_pregunta,"id2"=>$id_respuesta));
+			$validador->name("id")->required("Id invalido")->numberInteger();
+			$validador->name("id2")->required("Id invalido")->numberInteger();
+			if(!$validador->isGroupValid()){
+				$this->redireccionar('cursos');
+				exit();
+			}
+			$this->_model->eliminarRespuestaEXAMEN($id_respuesta);
+			$da = $this->_model->getPreguntaExamen($id_pregunta);
+	    	if ($da["answer_correct"]==$id_respuesta) {
+	    		$datos=array(
+					"id"=>$id_pregunta,
+		        	"answer_correct"=>0
+		        );
+		        $this->_model->actualizarEXAMEN($datos);
+	    	}
+	    	$this->redireccionar('cursos/editar_pregunta/'.$da["id_course"].'/'.$da["id_module"].'/'.$da["id_class"].'/'.$da["id"]);
+			exit();
+		}
 	}

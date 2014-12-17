@@ -118,6 +118,15 @@
 			$key = $key->fetch();
 			return $key['permission'];
 		}
+		public function getPermisoKeyTodos($id_key)
+		{
+			$id_key = (int) $id_key;
+			$key = $this->_db->query(
+				"SELECT permission FROM acl_key " .
+				"WHERE id = '$id_key'"
+			);
+			return $key->fetch();
+		}
 		public function getPermisoNombre($id_key)
 		{
 			$id_key = (int) $id_key;
@@ -181,12 +190,13 @@
 			if(array_key_exists($key,$this->_permisos)){
 				if($this->_permisos[$key]["valor"] == true || $this->_permisos[$key]["valor"] == 1){
 					return true;
-					
-				}else{
-					return false;
 				}
+				return false;
 			}else{
-				return true;
+				if (!is_array($this->getPermisoKeyTodos($key))) {
+					return true;
+				}
+				return false;
 			}
 		}
 		public function acceso($key)

@@ -38,12 +38,14 @@
 			$this->redireccionar('usuarios');
 		}
 
-		public function permisos($id_usuario)
+		public function permisos($id=false)
 		{
 			$this->_acl->acceso('user_role');
 
-			$id = $this->filtrarInt($id_usuario);
-			if (!$id) {
+			$this->getLibrary("validFluent");
+			$validador = new ValidFluent(array("id"=>$id));
+			$validador->name("id")->required("Id invalido")->numberInteger();
+			if(!$validador->isGroupValid()){
 				$this->redireccionar('usuarios');
 			}
 
@@ -102,8 +104,7 @@
 			}
 			$permisosUsuario = $this->_usuarios->getPermisosUsuario($id);
 			$permisosRole = $this->_usuarios->getPermisosRole($id);
-			
-			if (!$permisosUsuario || !$permisosRole) {
+			if (!is_array($permisosUsuario) || !is_array($permisosRole)) {
 				$this->redireccionar('usuarios');
 			}
 			$entro=array_keys($permisosUsuario);
